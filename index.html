@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beyrouth Shawarma Reims — Shawarma libanais fait maison, Place d'Erlon</title>
+<meta name="description" content="Beyrouth Shawarma, 11 rue Condorcet à Reims, à deux pas de la place d'Erlon. Shawarma bœuf et poulet, falafels, tout fait maison, halal. Ouvert tous les jours jusqu'à minuit, 3h le week-end.">
+<meta property="og:title" content="Beyrouth Shawarma — Reims">
+<meta property="og:description" content="Beyrouth dans chaque sandwich. Fait maison, halal. Place d'Erlon, Reims.">
+<meta property="og:image" content="img/devanture.jpg">
+<meta name="theme-color" content="#0E0E0E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Beyrouth Shawarma",
+  "image": "img/devanture.jpg",
+  "servesCuisine": "Lebanese",
+  "priceRange": "€",
+  "telephone": "+33766626672",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "11 rue Condorcet",
+    "addressLocality": "Reims",
+    "postalCode": "51100",
+    "addressCountry": "FR"
+  },
+  "sameAs": ["https://www.instagram.com/beyrouth.shawarma.reims/"],
+  "openingHoursSpecification": [
+    {"@type": "OpeningHoursSpecification","dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday"],"opens": "12:00","closes": "00:00"},
+    {"@type": "OpeningHoursSpecification","dayOfWeek": ["Friday","Saturday"],"opens": "12:00","closes": "03:00"}
+  ]
+}
+</script>
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --bg:#0E0E0E;
+  --gold:#D4A84B;
+  --gold-light:#E8C97A;
+  --sand:#E8DCC4;
+  --ink:#1A1410;
+  --paper:#F3EDE2;
+  --muted:#9A9088;
+  --font-display:"Bebas Neue","Oswald",Impact,sans-serif;
+  --font-body:"Inter",system-ui,-apple-system,sans-serif;
+  --gutter:16px;
+  --maxw:1120px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--bg);color:var(--paper);
+  font-family:var(--font-body);font-size:16px;line-height:1.55;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+}
+img,video,canvas{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
+.display{font-family:var(--font-display);letter-spacing:.04em;line-height:.95;text-transform:uppercase}
+.kicker{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:500}
+.rule{height:1px;background:var(--gold);opacity:.75}
+.rule.short{width:72px;margin:14px auto}
+
+/* Section title: gold rules above and below, like the logo */
+.sec-title{text-align:center;margin-bottom:40px}
+.sec-title .display{font-size:clamp(40px,8vw,64px);color:var(--gold)}
+.sec-title .rule{max-width:120px;margin:12px auto}
+.sec-title .kicker{display:block;margin-top:6px;color:var(--muted)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 24px;border-radius:2px;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;
+  transition:transform .15s ease,background .15s ease,color .15s ease}
+.btn:active{transform:scale(.98)}
+.btn-gold{background:var(--gold);color:var(--ink)}
+.btn-gold:hover{background:var(--gold-light)}
+.btn-line{border:1px solid var(--gold);color:var(--gold)}
+.btn-line:hover{background:var(--gold);color:var(--ink)}
+
+/* Sticker label (Insta reels style) */
+.tag{display:inline-block;background:var(--gold);color:var(--ink);
+  font-family:var(--font-display);font-size:clamp(20px,4.5vw,30px);letter-spacing:.06em;
+  padding:6px 14px 4px;line-height:1;text-transform:uppercase}
+
+/* ============================================================
+   INTRO
+   ============================================================ */
+#intro{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center;overflow:hidden;
+  transition:opacity .4s ease}
+#intro.hide{opacity:0;pointer-events:none}
+#intro video,#intro img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#intro .logo{position:relative;z-index:2;opacity:0;transition:opacity .5s ease;text-align:center}
+#intro.logo-on .logo{opacity:1}
+#intro .skip{position:absolute;right:var(--gutter);bottom:max(20px,env(safe-area-inset-bottom));z-index:3;
+  color:var(--paper);font-size:12px;letter-spacing:.2em;text-transform:uppercase;opacity:.7;padding:10px}
+
+.logo-block{display:inline-block;text-align:center}
+.logo-block .l1{font-family:var(--font-display);font-size:clamp(48px,12vw,96px);color:var(--gold);letter-spacing:.06em;line-height:.9}
+.logo-block .l2{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:6px}
+.logo-block .l2 span{font-size:clamp(11px,2.6vw,16px);letter-spacing:.42em;text-transform:uppercase;color:var(--gold);font-weight:500;padding-left:.42em}
+.logo-block .l2 i{flex:1;height:1px;background:var(--gold);min-width:20px}
+.logo-block .l3{font-size:9px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);opacity:.8;margin-top:8px;padding-left:.4em}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header{position:fixed;top:0;left:0;right:0;z-index:50;padding:14px 0;
+  transition:background .3s ease,backdrop-filter .3s ease;background:transparent}
+header.solid{background:rgba(14,14,14,.92);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid rgba(212,168,75,.25)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+header .brand{display:flex;align-items:center;gap:10px}
+header .brand img{height:38px;width:auto}
+header .brand .mini{font-family:var(--font-display);font-size:22px;color:var(--gold);letter-spacing:.06em;line-height:1}
+header .brand .mini small{display:block;font-family:var(--font-body);font-size:8px;letter-spacing:.35em;color:var(--gold);font-weight:500}
+header nav{display:none;gap:28px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper)}
+header nav a{opacity:.85}
+header nav a:hover{color:var(--gold);opacity:1}
+header .btn{padding:10px 16px;font-size:12px}
+@media (min-width:860px){header nav{display:flex}}
+
+/* ============================================================
+   SCROLL STORY
+   ============================================================ */
+#story{position:relative;height:620vh;background:var(--bg)}
+#story .sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;place-items:center}
+#story canvas{height:100%;width:auto;aspect-ratio:9/16;max-width:100%;background:var(--bg)}
+#story .vignette{position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 72% 88% at 50% 50%, rgba(14,14,14,0) 55%, rgba(14,14,14,.85) 100%),
+    linear-gradient(to bottom, rgba(14,14,14,.6) 0%, rgba(14,14,14,0) 18%, rgba(14,14,14,0) 82%, rgba(14,14,14,.7) 100%)}
+.cap{position:absolute;left:0;right:0;padding:0 var(--gutter);text-align:center;pointer-events:none;
+  opacity:0;transform:translateY(18px);transition:opacity .35s ease,transform .35s ease;will-change:opacity,transform}
+.cap.on{opacity:1;transform:translateY(0)}
+.cap .btn{pointer-events:auto}
+.cap-hero{top:16vh}
+.cap-hero .logo-block .l1{font-size:clamp(56px,16vw,120px);text-shadow:0 2px 24px rgba(0,0,0,.6)}
+.cap-hero p{margin-top:14px;font-size:clamp(14px,3.6vw,18px);color:var(--paper);letter-spacing:.04em}
+.cap-mid{top:12vh}
+.cap-low{bottom:12vh}
+.cap-end{bottom:10vh}
+.cap-end .display{font-size:clamp(36px,9vw,72px);color:var(--gold);text-shadow:0 2px 24px rgba(0,0,0,.7)}
+.cap-end .price{display:block;color:var(--paper);font-size:clamp(28px,7vw,52px);margin-top:4px}
+.cap-end .btn{margin-top:18px}
+#scrollhint{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;
+  font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);opacity:.85;transition:opacity .3s}
+#scrollhint span{display:block;width:1px;height:28px;background:var(--gold);margin:8px auto 0;animation:drop 1.4s ease-in-out infinite}
+#scrollhint.off{opacity:0}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@media (min-width:860px){
+  #story canvas{max-width:480px}
+  .cap-hero{top:20vh}
+}
+
+/* Reduced motion / static fallback */
+#story.static{height:auto}
+#story.static .sticky{position:relative;height:auto;padding:100px 0 40px}
+#story.static .cap{position:static;opacity:1;transform:none;margin-top:28px}
+#story.static .vignette,#story.static #scrollhint{display:none}
+
+/* ============================================================
+   MENU
+   ============================================================ */
+#menu{background:var(--sand);color:var(--ink);padding:72px 0 80px;position:relative}
+#menu .sec-title .display{color:var(--ink)}
+#menu .sec-title .kicker{color:#6B5A3E}
+.pills{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:-20px 0 36px}
+.pill{font-size:11px;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--ink);padding:6px 12px;border-radius:999px;font-weight:500}
+.menu-grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:640px){.menu-grid{grid-template-columns:1fr 1fr}}
+@media (min-width:980px){.menu-grid{grid-template-columns:repeat(3,1fr)}}
+.menu-cat{grid-column:1/-1;margin-top:26px;display:flex;align-items:center;gap:14px}
+.menu-cat:first-child{margin-top:0}
+.menu-cat h3{font-family:var(--font-display);font-size:30px;letter-spacing:.06em;color:var(--ink)}
+.menu-cat .rule{flex:1;background:var(--gold);opacity:1}
+.card{background:#fff;border-radius:4px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:8px;
+  box-shadow:0 1px 0 rgba(26,20,16,.06);position:relative;min-height:112px}
+.card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.card h4{font-family:var(--font-display);font-size:24px;letter-spacing:.05em;line-height:1}
+.card .price{background:var(--ink);color:var(--gold);font-family:var(--font-display);font-size:20px;letter-spacing:.06em;padding:5px 10px 3px;border-radius:2px;white-space:nowrap;line-height:1}
+.card p{font-size:14px;color:#4A3F35;line-height:1.5}
+.card.featured{grid-column:1/-1;background:var(--ink);color:var(--paper);display:grid;gap:14px;padding:26px 22px;
+  border:1px solid var(--gold)}
+.card.featured h4{color:var(--gold);font-size:36px}
+.card.featured p{color:var(--paper);opacity:.9;font-size:15px}
+.card.featured .price{background:var(--gold);color:var(--ink);font-size:30px;padding:8px 14px 6px}
+.card.featured .badge{position:absolute;top:-11px;left:20px;background:var(--gold);color:var(--ink);font-size:10px;letter-spacing:.24em;text-transform:uppercase;padding:5px 10px;font-weight:600}
+@media (min-width:640px){.card.featured{grid-template-columns:1fr auto;align-items:center}}
+.menu-note{text-align:center;margin-top:34px;font-size:13px;color:#6B5A3E;letter-spacing:.04em}
+.drinks{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:#4A3F35}
+.drinks span::before{content:"•";color:var(--gold);margin-right:8px}
+
+/* ============================================================
+   RESTO
+   ============================================================ */
+#resto{padding:80px 0}
+#resto .hero-img{position:relative;border-radius:4px;overflow:hidden;aspect-ratio:4/3;background:#1a1a1a}
+#resto .hero-img img{width:100%;height:100%;object-fit:cover}
+#resto .hero-img .over{position:absolute;left:0;right:0;bottom:0;padding:22px var(--gutter);
+  background:linear-gradient(to top,rgba(14,14,14,.9),rgba(14,14,14,0))}
+#resto .hero-img .over .display{font-size:clamp(30px,7vw,56px);color:var(--gold)}
+#resto .text{max-width:640px;margin:34px auto 0;text-align:center}
+#resto .text p{font-size:17px;line-height:1.7;color:var(--paper);opacity:.92}
+#resto .text p+p{margin-top:14px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:40px}
+.gallery figure{position:relative;aspect-ratio:1;overflow:hidden;border-radius:3px;background:#1a1a1a}
+.gallery img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.gallery figure:hover img{transform:scale(1.04)}
+.gallery figcaption{position:absolute;left:0;right:0;bottom:0;background:var(--ink);color:var(--gold);
+  font-family:var(--font-display);font-size:clamp(13px,3vw,20px);letter-spacing:.08em;padding:6px 8px 4px;text-align:center;line-height:1}
+@media (min-width:860px){#resto .hero-img{aspect-ratio:21/9}}
+
+/* ============================================================
+   INFOS
+   ============================================================ */
+#infos{padding:80px 0 100px;border-top:1px solid rgba(212,168,75,.3)}
+.info-grid{display:grid;gap:36px}
+@media (min-width:860px){.info-grid{grid-template-columns:1fr 1fr;align-items:start}}
+.info-list{display:grid;gap:24px}
+.info-item .kicker{display:block;margin-bottom:6px}
+.info-item .big{font-family:var(--font-display);font-size:clamp(26px,6vw,38px);letter-spacing:.04em;color:var(--paper);line-height:1.05}
+.info-item .sub{font-size:14px;color:var(--muted);margin-top:4px}
+.info-item a.big:hover{color:var(--gold)}
+.hours{display:grid;gap:6px;font-size:15px}
+.hours div{display:flex;justify-content:space-between;border-bottom:1px dashed rgba(212,168,75,.3);padding:6px 0}
+.hours b{color:var(--gold);font-weight:600}
+.map{aspect-ratio:4/3;border-radius:4px;overflow:hidden;background:#1a1a1a;border:1px solid rgba(212,168,75,.3)}
+.map iframe{width:100%;height:100%;border:0;filter:grayscale(1) invert(.92) contrast(.9) hue-rotate(180deg)}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+/* ============================================================
+   FOOTER + MOBILE BAR
+   ============================================================ */
+footer{padding:40px 0 calc(40px + 72px);border-top:1px solid rgba(212,168,75,.3);text-align:center;color:var(--muted);font-size:13px}
+footer .logo-block{transform:scale(.6);transform-origin:center;margin-bottom:-18px}
+footer p+p{margin-top:6px}
+footer a:hover{color:var(--gold)}
+#mbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:grid;grid-template-columns:1fr 1fr;gap:1px;
+  background:rgba(212,168,75,.35);padding-bottom:env(safe-area-inset-bottom);
+  transform:translateY(110%);transition:transform .3s ease}
+#mbar.on{transform:translateY(0)}
+#mbar a{display:flex;align-items:center;justify-content:center;padding:16px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+#mbar a.call{background:var(--bg);color:var(--gold)}
+#mbar a.order{background:var(--gold);color:var(--ink)}
+@media (min-width:860px){#mbar{display:none}footer{padding-bottom:40px}}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     INTRO (autoplay, skippable, once per session)
+     ============================================================ -->
+<div id="intro" aria-hidden="true">
+  <video id="introVideo" muted playsinline preload="auto" poster="img/devanture.jpg">
+    <source src="video/intro.mp4" type="video/mp4">
+  </video>
+  <div class="logo">
+    <div class="logo-block">
+      <div class="l1">Beyrouth</div>
+      <div class="l2"><i></i><span>Shawarma</span><i></i></div>
+      <div class="l3">Fait maison</div>
+    </div>
+  </div>
+  <button class="skip" id="skipIntro" type="button">Passer</button>
+</div>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header id="hdr">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Beyrouth Shawarma">
+      <img src="img/logo.svg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div class="mini" style="display:none">Beyrouth<small>Shawarma</small></div>
+    </a>
+    <nav>
+      <a href="#menu">Menu</a>
+      <a href="#resto">Le resto</a>
+      <a href="#infos">Infos</a>
+    </nav>
+    <a class="btn btn-gold" href="https://www.ubereats.com/fr/store/beyrouth-shawarma/bP_9NCgOWiKkpuGLaC-mWg" target="_blank" rel="noopener">Commander</a>
+  </div>
+</header>
+
+<!-- ============================================================
+     SCROLL STORY (canvas frame-sequence)
+     ============================================================ -->
+<section id="story" aria-label="Préparation du shawarma">
+  <div class="sticky" id="top">
+    <canvas id="cv" width="1080" height="1920" aria-hidden="true"></canvas>
+    <div class="vignette"></div>
+
+    <div class="cap cap-hero" data-from="0" data-to="0.10">
+      <div class="logo-block">
+        <div class="l1">Beyrouth</div>
+        <div class="l2"><i></i><span>Shawarma</span><i></i></div>
+      </div>
+      <p>Beyrouth dans chaque sandwich</p>
+    </div>
+
+    <div class="cap cap-mid" data-from="0.12" data-to="0.17">
+      <span class="tag">Couteau affûté</span>
+    </div>
+
+    <div class="cap cap-mid" data-from="0.22" data-to="0.38">
+      <span class="tag">Bœuf mariné, coupé minute</span>
+    </div>
+
+    <div class="cap cap-low" data-from="0.48" data-to="0.65">
+      <span class="tag">Sauce à l'ail maison</span>
+    </div>
+
+    <div class="cap cap-end" data-from="0.80" data-to="1">
+      <div class="display">Shawarma bœuf<span class="price">9,50 €</span></div>
+      <a class="btn btn-gold" href="#menu">Voir le menu</a>
+    </div>
+
+    <div id="scrollhint">Scrollez<span></span></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MENU (prix sur place)
+     ============================================================ -->
+<section id="menu">
+  <div class="wrap">
+    <div class="sec-title">
+      <div class="rule"></div>
+      <h2 class="display">Le menu</h2>
+      <div class="rule"></div>
+      <span class="kicker">Prix sur place</span>
+    </div>
+    <div class="pills"><span class="pill">Fait maison</span><span class="pill">Halal</span><span class="pill">Beyrouth, Reims</span></div>
+
+    <div class="menu-grid">
+      <article class="card featured">
+        <span class="badge">Populaire</span>
+        <div>
+          <h4>Formule</h4>
+          <p>1 sandwich au choix + frites + sauce ail + 1 boisson.</p>
+        </div>
+        <span class="price">13 €</span>
+      </article>
+
+      <div class="menu-cat"><h3>Sandwichs</h3><div class="rule"></div></div>
+      <article class="card">
+        <div class="top"><h4>Shawarma bœuf</h4><span class="price">9,50 €</span></div>
+        <p>Bœuf mariné maison coupé minute, tomate, persil, cornichon, sauce ail.</p>
+      </article>
+      <article class="card">
+        <div class="top"><h4>Shawarma poulet</h4><span class="price">9 €</span></div>
+        <p>Poulet mariné maison, sauce ail, cornichon, frites dans le sandwich.</p>
+      </article>
+      <article class="card">
+        <div class="top"><h4>Sandwich falafel</h4><span class="price">9 €</span></div>
+        <p>Falafels maison, persil, tomate, oignon, radis, cornichon, menthe, sauce sésame.</p>
+      </article>
+      <article class="card">
+        <div class="top"><h4>Sandwich Beyrouth</h4><span class="price">9 €</span></div>
+        <p>Blanc de poulet, sauce ail, cornichon, dans une baguette.</p>
+      </article>
+
+      <div class="menu-cat"><h3>Entrées</h3><div class="rule"></div></div>
+      <article class="card">
+        <div class="top"><h4>Barquette falafel</h4><span class="price">11 €</span></div>
+        <p>4 falafels maison, légumes, sauce sésame, pain.</p>
+      </article>
+      <article class="card">
+        <div class="top"><h4>Barquette houmous</h4><span class="price">6,50 €</span></div>
+        <p>Houmous maison, huile d'olive, pain.</p>
+      </article>
+      <article class="card">
+        <div class="top"><h4>Barquette chawarma</h4><span class="price">6,50 €</span></div>
+        <p>Viande de la broche, sauce ail.</p>
+      </article>
+      <article class="card">
+        <div class="top"><h4>Frites</h4><span class="price">3 €</span></div>
+        <p>Barquette de frites.</p>
+      </article>
+      <article class="card">
+        <div class="top"><h4>Sauces</h4><span class="price">1 €</span></div>
+        <p>Ail · Tahina</p>
+      </article>
+
+      <div class="menu-cat"><h3>Boissons</h3><div class="rule"></div></div>
+      <article class="card" style="grid-column:1/-1">
+        <div class="top"><h4>Canettes &amp; eau</h4><span class="price">3 €</span></div>
+        <div class="drinks"><span>Ice Tea pêche</span><span>Sprite</span><span>Oasis tropical</span><span>Fanta</span><span>Perrier</span><span>Eau plate</span></div>
+      </article>
+    </div>
+
+    <p class="menu-note">Prix sur place. Livraison via Uber Eats.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     LE RESTO
+     ============================================================ -->
+<section id="resto">
+  <div class="wrap">
+    <div class="sec-title">
+      <div class="rule"></div>
+      <h2 class="display">Le resto</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="hero-img">
+      <img src="img/devanture.jpg" alt="La devanture de Beyrouth Shawarma, rue Condorcet à Reims" loading="lazy">
+      <div class="over"><div class="display">Place d'Erlon, Reims</div></div>
+    </div>
+    <div class="text">
+      <p>L'équipe d'Ô Délices du Liban a ouvert une nouvelle adresse, à deux pas de la place d'Erlon, dans la rue du manège.</p>
+      <p>Tout est fait maison : la viande marinée et coupée minute à la broche, les falafels, la sauce à l'ail, le houmous. Halal.</p>
+    </div>
+    <div class="gallery">
+      <figure><img src="img/shawarma-boeuf.jpg" alt="Shawarma bœuf" loading="lazy"><figcaption>Shawarma bœuf</figcaption></figure>
+      <figure><img src="img/shawarma-poulet.jpg" alt="Shawarma poulet" loading="lazy"><figcaption>Shawarma poulet</figcaption></figure>
+      <figure><img src="img/falafel.jpg" alt="Sandwich falafel" loading="lazy"><figcaption>Falafel</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     INFOS
+     ============================================================ -->
+<section id="infos">
+  <div class="wrap">
+    <div class="sec-title">
+      <div class="rule"></div>
+      <h2 class="display">Infos</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="info-grid">
+      <div class="info-list">
+        <div class="info-item">
+          <span class="kicker">Adresse</span>
+          <a class="big" href="https://maps.app.goo.gl/n7QbZCui6NHMEttL8" target="_blank" rel="noopener">11 rue Condorcet<br>51100 Reims</a>
+          <div class="sub">À deux pas de la place d'Erlon, dans la rue du manège.</div>
+        </div>
+        <div class="info-item">
+          <span class="kicker">Horaires</span>
+          <div class="hours">
+            <div><span>Lundi – Jeudi</span><b>12:00 – 00:00</b></div>
+            <div><span>Vendredi – Samedi</span><b>12:00 – 03:00</b></div>
+            <div><span>Dimanche</span><b>Fermé</b></div>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="kicker">Téléphone</span>
+          <a class="big" href="tel:+33766626672">07 66 62 66 72</a>
+        </div>
+        <div class="info-item">
+          <span class="kicker">Instagram</span>
+          <a class="big" href="https://www.instagram.com/beyrouth.shawarma.reims/" target="_blank" rel="noopener">@beyrouth.shawarma.reims</a>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-gold" href="https://www.ubereats.com/fr/store/beyrouth-shawarma/bP_9NCgOWiKkpuGLaC-mWg" target="_blank" rel="noopener">Commander sur Uber Eats</a>
+          <a class="btn btn-line" href="tel:+33766626672">Appeler</a>
+        </div>
+      </div>
+      <div class="map">
+        <iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Plan"
+          src="https://www.google.com/maps?q=11+rue+Condorcet,+51100+Reims&output=embed"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo-block">
+      <div class="l1">Beyrouth</div>
+      <div class="l2"><i></i><span>Shawarma</span><i></i></div>
+      <div class="l3">Fait maison</div>
+    </div>
+    <p>11 rue Condorcet, 51100 Reims · <a href="tel:+33766626672">07 66 62 66 72</a> · <a href="https://www.instagram.com/beyrouth.shawarma.reims/" target="_blank" rel="noopener">Instagram</a></p>
+    <p>© 2026 Beyrouth Shawarma</p>
+  </div>
+</footer>
+
+<div id="mbar" aria-label="Actions rapides">
+  <a class="call" href="tel:+33766626672">Appeler</a>
+  <a class="order" href="https://www.ubereats.com/fr/store/beyrouth-shawarma/bP_9NCgOWiKkpuGLaC-mWg" target="_blank" rel="noopener">Commander</a>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — ajuster le nombre d'images par séquence après ffmpeg
+   ============================================================ */
+const CONFIG = {
+  sequences: [
+    { dir: 'frames/s1', count: 76, from: 0.00, to: 0.18 }, // affûtage
+    { dir: 'frames/s2', count: 121, from: 0.18, to: 0.42 }, // découpe
+    { dir: 'frames/s3', count: 121, from: 0.42, to: 0.72 }, // assemblage
+    { dir: 'frames/s4', count: 121, from: 0.72, to: 1.00 }, // emballage
+  ],
+  ext: 'webp',
+  pad: 4,
+  lerp: 0.15,
+};
+
+/* ============================================================
+   INTRO
+   ============================================================ */
+(function(){
+  const intro = document.getElementById('intro');
+  const vid = document.getElementById('introVideo');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let seen = false;
+  try { seen = sessionStorage.getItem('introSeen') === '1'; } catch(e){}
+  let done = false;
+
+  function finish(){
+    if(done) return; done = true;
+    intro.classList.add('hide');
+    try { sessionStorage.setItem('introSeen','1'); } catch(e){}
+    setTimeout(()=>{ intro.remove(); }, 450);
+    document.documentElement.style.overflow = '';
+  }
+
+  if(seen){ intro.remove(); return; }
+  document.documentElement.style.overflow = 'hidden';
+
+  document.getElementById('skipIntro').addEventListener('click', finish);
+  ['wheel','touchstart','keydown'].forEach(ev => addEventListener(ev, finish, { once:true, passive:true }));
+
+  if(reduce){
+    vid.remove();
+    const img = document.createElement('img'); img.src = 'img/devanture.jpg'; img.alt = '';
+    intro.prepend(img);
+    setTimeout(()=>intro.classList.add('logo-on'), 100);
+    setTimeout(finish, 1400);
+    return;
+  }
+
+  let logoShown = false;
+  vid.addEventListener('timeupdate', () => {
+    if(!logoShown && vid.duration && vid.duration - vid.currentTime <= 0.6){
+      logoShown = true; intro.classList.add('logo-on');
+    }
+  });
+  vid.addEventListener('ended', () => { intro.classList.add('logo-on'); setTimeout(finish, 350); });
+  vid.addEventListener('error', () => { intro.classList.add('logo-on'); setTimeout(finish, 1200); });
+  const p = vid.play();
+  if(p && p.catch){ p.catch(() => { intro.classList.add('logo-on'); setTimeout(finish, 1200); }); }
+  setTimeout(finish, 9000); // hard cap
+})();
+
+/* ============================================================
+   SCROLL STORY
+   ============================================================ */
+(function(){
+  const story = document.getElementById('story');
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const caps = [...document.querySelectorAll('.cap')];
+  const hint = document.getElementById('scrollhint');
+  const hdr = document.getElementById('hdr');
+  const mbar = document.getElementById('mbar');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Build frame list
+  const frames = []; // {src, img|null, seq}
+  CONFIG.sequences.forEach((s, si) => {
+    for(let i=1;i<=s.count;i++){
+      frames.push({ src: `${s.dir}/${String(i).padStart(CONFIG.pad,'0')}.${CONFIG.ext}`, img:null, ok:false, seq:si });
+    }
+  });
+  const total = frames.length;
+
+  // Map progress (0..1) -> global frame index, respecting per-sequence ranges
+  function frameAt(p){
+    for(let si=0; si<CONFIG.sequences.length; si++){
+      const s = CONFIG.sequences[si];
+      if(p <= s.to || si === CONFIG.sequences.length-1){
+        const local = Math.min(1, Math.max(0, (p - s.from) / (s.to - s.from)));
+        let offset = 0; for(let k=0;k<si;k++) offset += CONFIG.sequences[k].count;
+        return offset + Math.round(local * (s.count-1));
+      }
+    }
+    return total-1;
+  }
+
+  // Loading: s1 first, then the rest in background
+  function load(i){
+    return new Promise(res => {
+      const f = frames[i]; if(!f || f.img) return res();
+      const im = new Image();
+      im.onload = () => { f.img = im; f.ok = true; res(); };
+      im.onerror = () => { f.img = null; f.ok = false; res(); };
+      im.src = f.src;
+    });
+  }
+  async function loadRange(a, b, concurrency=6){
+    let i = a;
+    const workers = Array.from({length:concurrency}, async () => { while(i<=b){ const k=i++; await load(k); } });
+    await Promise.all(workers);
+  }
+
+  // Nearest loaded frame fallback
+  function nearest(i){
+    if(frames[i] && frames[i].ok) return frames[i].img;
+    for(let d=1; d<total; d++){
+      if(frames[i-d] && frames[i-d].ok) return frames[i-d].img;
+      if(frames[i+d] && frames[i+d].ok) return frames[i+d].img;
+    }
+    return null;
+  }
+
+  // Canvas sizing (devicePixelRatio aware, 9:16)
+  function size(){
+    const h = story.querySelector('.sticky').clientHeight;
+    const w = Math.min(h * 9/16, innerWidth);
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.style.height = h + 'px'; cv.style.width = w + 'px';
+    cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+    draw(true);
+  }
+
+  let target = 0, current = 0, lastDrawn = -1;
+  function draw(force){
+    const i = Math.round(current);
+    if(!force && i === lastDrawn) return;
+    const im = nearest(i); if(!im) return;
+    lastDrawn = i;
+    ctx.fillStyle = '#0E0E0E'; ctx.fillRect(0,0,cv.width,cv.height);
+    // contain
+    const r = Math.min(cv.width/im.width, cv.height/im.height);
+    const dw = im.width*r, dh = im.height*r;
+    ctx.drawImage(im, (cv.width-dw)/2, (cv.height-dh)/2, dw, dh);
+  }
+
+  function progress(){
+    const rect = story.getBoundingClientRect();
+    const scrollable = story.offsetHeight - innerHeight;
+    return Math.min(1, Math.max(0, -rect.top / scrollable));
+  }
+
+  function updateCaps(p){
+    caps.forEach(c => {
+      const a = +c.dataset.from, b = +c.dataset.to;
+      c.classList.toggle('on', p >= a && p <= b);
+    });
+    hint.classList.toggle('off', p > 0.02);
+  }
+
+  function onScroll(){
+    const p = progress();
+    target = frameAt(p);
+    updateCaps(p);
+    hdr.classList.toggle('solid', scrollY > 40);
+    const past = story.getBoundingClientRect().bottom < innerHeight * 0.5;
+    mbar.classList.toggle('on', past);
+  }
+
+  function loop(){
+    current += (target - current) * CONFIG.lerp;
+    if(Math.abs(target-current) < 0.4) current = target;
+    draw(false);
+    requestAnimationFrame(loop);
+  }
+
+  if(reduce){
+    story.classList.add('static');
+    const last = total-1;
+    load(last).then(()=>{ current = target = last; size(); });
+    hdr.classList.add('solid');
+    addEventListener('scroll', () => { hdr.classList.toggle('solid', true); }, {passive:true});
+    return;
+  }
+
+  addEventListener('resize', size);
+  addEventListener('scroll', onScroll, { passive:true });
+
+  (async () => {
+    await load(0); size(); onScroll();
+    const s1end = CONFIG.sequences[0].count - 1;
+    await loadRange(0, s1end, 8);
+    loadRange(s1end+1, total-1, 6);
+  })();
+  loop();
+})();
+</script>
+</body>
+</html>
