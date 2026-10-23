@@ -132,7 +132,7 @@ header .btn{padding:10px 16px;font-size:12px}
    SCROLL STORY
    ============================================================ */
 #story{position:relative;height:620vh;background:var(--bg)}
-#story .sticky{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:grid;place-items:center}
+#story .sticky{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;display:grid;place-items:center}
 #story canvas{height:100%;width:auto;aspect-ratio:9/16;max-width:100%;background:var(--bg)}
 #story .vignette{position:absolute;inset:0;pointer-events:none;
   background:
@@ -151,10 +151,16 @@ header .btn{padding:10px 16px;font-size:12px}
 .cap-end .display{font-size:clamp(28px,7.5vw,60px);color:var(--gold);text-shadow:0 2px 24px rgba(0,0,0,.7)}
 .cap-end .price{display:block;color:var(--paper);font-size:clamp(28px,7vw,52px);margin-top:4px}
 .cap-end .btn{margin-top:18px}
+html.locked,html.locked body{overflow:hidden;height:100%}
+#loadbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(224,168,50,.18);z-index:5;transition:opacity .4s}
+#loadbar i{display:block;height:100%;background:var(--gold);transform-origin:left;transform:scaleX(0);transition:transform .2s linear}
+#loadbar.off{opacity:0}
 #scrollhint{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;
   font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);opacity:.85;transition:opacity .3s}
 #scrollhint span{display:block;width:1px;height:28px;background:var(--gold);margin:8px auto 0;animation:drop 1.4s ease-in-out infinite}
-#scrollhint.off{opacity:0}
+#scrollhint{opacity:0}
+#scrollhint.ready{opacity:.85}
+#scrollhint.off{opacity:0 !important}
 @keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 @media (min-width:860px){
   #story canvas{max-width:480px}
@@ -260,7 +266,7 @@ footer a:hover{color:var(--gold)}
      INTRO (autoplay, skippable, once per session)
      ============================================================ -->
 <div id="intro" aria-hidden="true">
-  <video id="introVideo" muted playsinline preload="auto" poster="img/devanture.jpg" style="background:#0E0E0E">
+  <video id="introVideo" muted playsinline preload="auto" poster="img/devanture-full.jpg" style="background:#0E0E0E">
     <source src="video/intro.mp4" type="video/mp4">
   </video>
   <div class="logo">
@@ -279,8 +285,7 @@ footer a:hover{color:var(--gold)}
 <header id="hdr">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Beyrouth Shawarma">
-      <img src="img/logo.svg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <div class="mini" style="display:none">Beyrouth<small>Shawarma</small></div>
+      <div class="mini">Beyrouth<small>Shawarma</small></div>
     </a>
     <nav>
       <a href="#menu">Menu</a>
@@ -324,6 +329,7 @@ footer a:hover{color:var(--gold)}
       <a class="btn btn-gold" href="#menu">Voir le menu</a>
     </div>
 
+    <div id="loadbar" aria-hidden="true"><i></i></div>
     <div id="scrollhint">Scrollez<span></span></div>
   </div>
 </section>
@@ -497,61 +503,60 @@ footer a:hover{color:var(--gold)}
    ============================================================ */
 const CONFIG = {
   sequences: [
-    { dir: 'frames/s1', count: 76, from: 0.00, to: 0.18 }, // affûtage
-    { dir: 'frames/s2', count: 121, from: 0.18, to: 0.42 }, // découpe
-    { dir: 'frames/s3', count: 121, from: 0.42, to: 0.72 }, // assemblage
-    { dir: 'frames/s4', count: 121, from: 0.72, to: 1.00 }, // emballage
+    { dir: 'frames/s1', count: 50, from: 0.00, to: 0.18 }, // affûtage
+    { dir: 'frames/s2', count: 80, from: 0.18, to: 0.42 }, // découpe
+    { dir: 'frames/s3', count: 80, from: 0.42, to: 0.72 }, // assemblage
+    { dir: 'frames/s4', count: 80, from: 0.72, to: 1.00 }, // emballage
   ],
   ext: 'webp',
   pad: 4,
-  lerp: 0.15,
+  lerp: 0.12,
 };
 
 /* ============================================================
-   INTRO
+   INTRO — vidéo autoplay, image fixe en secours, jamais masquée par session
    ============================================================ */
+window.__introDone = false;
 (function(){
   const intro = document.getElementById('intro');
   const vid = document.getElementById('introVideo');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let seen = false;
-  try { seen = sessionStorage.getItem('introSeen') === '1'; } catch(e){}
   let done = false;
 
   function finish(){
     if(done) return; done = true;
+    window.__introDone = true;
     intro.classList.add('hide');
-    try { sessionStorage.setItem('introSeen','1'); } catch(e){}
     setTimeout(()=>{ intro.remove(); }, 450);
-    document.documentElement.style.overflow = '';
+    dispatchEvent(new Event('introdone'));
   }
-
-  if(seen){ intro.remove(); return; }
-  document.documentElement.style.overflow = 'hidden';
-
+  document.documentElement.classList.add('locked');
   document.getElementById('skipIntro').addEventListener('click', finish);
-  ['wheel','touchstart','keydown'].forEach(ev => addEventListener(ev, finish, { once:true, passive:true }));
 
-  if(reduce){
-    vid.remove();
-    const img = document.createElement('img'); img.src = 'img/devanture.jpg'; img.alt = '';
+  function fallback(){
+    if(done) return;
+    try{ vid.pause(); }catch(e){}
+    vid.style.display = 'none';
+    const img = document.createElement('img'); img.src = 'img/devanture-full.jpg'; img.alt = '';
     intro.prepend(img);
-    setTimeout(()=>intro.classList.add('logo-on'), 100);
-    setTimeout(finish, 1400);
-    return;
+    setTimeout(()=>intro.classList.add('logo-on'), 300);
+    setTimeout(finish, 2200);
   }
+  if(reduce){ fallback(); return; }
 
-  let logoShown = false;
+  let started = false, logoShown = false;
+  vid.addEventListener('playing', () => { started = true; dispatchEvent(new Event('introplaying')); });
   vid.addEventListener('timeupdate', () => {
-    if(!logoShown && vid.duration && vid.duration - vid.currentTime <= 0.6){
+    if(!logoShown && vid.duration && vid.duration - vid.currentTime <= 0.7){
       logoShown = true; intro.classList.add('logo-on');
     }
   });
   vid.addEventListener('ended', () => { intro.classList.add('logo-on'); setTimeout(finish, 350); });
-  vid.addEventListener('error', () => { intro.classList.add('logo-on'); setTimeout(finish, 1200); });
+  vid.addEventListener('error', fallback);
   const p = vid.play();
-  if(p && p.catch){ p.catch(() => { intro.classList.add('logo-on'); setTimeout(finish, 1200); }); }
-  setTimeout(finish, 9000); // hard cap
+  if(p && p.catch){ p.catch(fallback); }
+  setTimeout(() => { if(!started) fallback(); }, 1500);
+  setTimeout(finish, 9000);
 })();
 
 /* ============================================================
@@ -680,13 +685,43 @@ const CONFIG = {
   addEventListener('resize', size);
   addEventListener('scroll', onScroll, { passive:true });
 
-  (async () => {
-    await load(0); size(); onScroll();
-    const s1end = CONFIG.sequences[0].count - 1;
-    await loadRange(0, s1end, 8);
-    loadRange(s1end+1, total-1, 6);
-  })();
+  // Préchargement : s1+s2 avant de libérer le scroll, s3+s4 en arrière-plan
+  const bar = document.getElementById('loadbar');
+  const barFill = bar.querySelector('i');
+  let loadedCount = 0, ready = false;
+  const firstBatchEnd = CONFIG.sequences[0].count + CONFIG.sequences[1].count - 1;
+  function tick(){ loadedCount++; barFill.style.transform = `scaleX(${Math.min(1, loadedCount/(firstBatchEnd+1))})`; }
+  async function loadRangeTicked(a, b, c){
+    let i = a;
+    const workers = Array.from({length:c}, async () => { while(i<=b){ const k=i++; await load(k); if(k<=firstBatchEnd) tick(); } });
+    await Promise.all(workers);
+  }
+  function maybeUnlock(){
+    if(ready && window.__introDone){ document.documentElement.classList.remove('locked'); }
+  }
+  function unlock(){
+    if(ready) return; ready = true;
+    bar.classList.add('off'); hint.classList.add('ready');
+    maybeUnlock();
+  }
+  addEventListener('introdone', maybeUnlock);
+  // Les frames attendent que la vidéo d'intro ait démarré (ou soit abandonnée)
+  // pour ne pas lui voler la bande passante.
+  function startFrames(){
+    if(startFrames.done) return; startFrames.done = true;
+    (async () => {
+      await load(0); size(); onScroll();
+      await loadRangeTicked(0, firstBatchEnd, 12);
+      unlock();
+      loadRangeTicked(firstBatchEnd+1, total-1, 8);
+    })();
+    setTimeout(unlock, 12000); // garde-fou 4G lente
+  }
+  addEventListener('introplaying', startFrames);
+  addEventListener('introdone', startFrames);
+  setTimeout(startFrames, 2500);
   loop();
+
 })();
 </script>
 </body>
