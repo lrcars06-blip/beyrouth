@@ -502,14 +502,14 @@ footer a:hover{color:var(--gold)}
    CONFIG — ajuster le nombre d'images par séquence après ffmpeg
    ============================================================ */
 const CONFIG = {
+  // Chaque séquence = feuilles de sprites (20 images par feuille, 4 colonnes)
   sequences: [
-    { dir: 'frames/s1', count: 50, from: 0.00, to: 0.18 }, // affûtage
-    { dir: 'frames/s2', count: 80, from: 0.18, to: 0.42 }, // découpe
-    { dir: 'frames/s3', count: 80, from: 0.42, to: 0.72 }, // assemblage
-    { dir: 'frames/s4', count: 80, from: 0.72, to: 1.00 }, // emballage
+    { name: 's1', count: 50, from: 0.00, to: 0.18 }, // affûtage
+    { name: 's2', count: 80, from: 0.18, to: 0.42 }, // découpe
+    { name: 's3', count: 80, from: 0.42, to: 0.72 }, // assemblage
+    { name: 's4', count: 80, from: 0.72, to: 1.00 }, // emballage
   ],
-  ext: 'webp',
-  pad: 4,
+  dir: 'sprites', per: 20, cols: 4, fw: 560, fh: 1004,
   lerp: 0.12,
 };
 
@@ -572,16 +572,20 @@ window.__introDone = false;
   const mbar = document.getElementById('mbar');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Build frame list
-  const frames = []; // {src, img|null, seq}
-  CONFIG.sequences.forEach((s, si) => {
-    for(let i=1;i<=s.count;i++){
-      frames.push({ src: `${s.dir}/${String(i).padStart(CONFIG.pad,'0')}.${CONFIG.ext}`, img:null, ok:false, seq:si });
+  // Table des images : chaque image pointe vers une feuille + une position
+  const frames = []; // {sheet, idx}
+  const sheets = []; // {src, img|null, ok}
+  CONFIG.sequences.forEach(seq => {
+    const nSheets = Math.ceil(seq.count / CONFIG.per);
+    for(let k=0;k<nSheets;k++){
+      const sh = { src: `${CONFIG.dir}/${seq.name}_${k}.webp`, img:null, ok:false };
+      sheets.push(sh);
+      const n = Math.min(CONFIG.per, seq.count - k*CONFIG.per);
+      for(let i=0;i<n;i++) frames.push({ sheet: sh, idx: i });
     }
   });
   const total = frames.length;
 
-  // Map progress (0..1) -> global frame index, respecting per-sequence ranges
   function frameAt(p){
     for(let si=0; si<CONFIG.sequences.length; si++){
       const s = CONFIG.sequences[si];
@@ -594,28 +598,27 @@ window.__introDone = false;
     return total-1;
   }
 
-  // Loading: s1 first, then the rest in background
-  function load(i){
+  function loadSheet(sh){
     return new Promise(res => {
-      const f = frames[i]; if(!f || f.img) return res();
+      if(sh.img) return res();
       const im = new Image();
-      im.onload = () => { f.img = im; f.ok = true; res(); };
-      im.onerror = () => { f.img = null; f.ok = false; res(); };
-      im.src = f.src;
+      im.onload = () => { sh.img = im; sh.ok = true; res(); };
+      im.onerror = () => { sh.ok = false; res(); };
+      im.src = sh.src;
     });
   }
-  async function loadRange(a, b, concurrency=6){
+  async function loadSheets(a, b, concurrency, onEach){
     let i = a;
-    const workers = Array.from({length:concurrency}, async () => { while(i<=b){ const k=i++; await load(k); } });
+    const workers = Array.from({length:concurrency}, async () => { while(i<=b){ const k=i++; await loadSheet(sheets[k]); if(onEach) onEach(k); } });
     await Promise.all(workers);
   }
 
-  // Nearest loaded frame fallback
+  // Image la plus proche disponible
   function nearest(i){
-    if(frames[i] && frames[i].ok) return frames[i].img;
+    if(frames[i] && frames[i].sheet.ok) return frames[i];
     for(let d=1; d<total; d++){
-      if(frames[i-d] && frames[i-d].ok) return frames[i-d].img;
-      if(frames[i+d] && frames[i+d].ok) return frames[i+d].img;
+      if(frames[i-d] && frames[i-d].sheet.ok) return frames[i-d];
+      if(frames[i+d] && frames[i+d].sheet.ok) return frames[i+d];
     }
     return null;
   }
@@ -634,13 +637,13 @@ window.__introDone = false;
   function draw(force){
     const i = Math.round(current);
     if(!force && i === lastDrawn) return;
-    const im = nearest(i); if(!im) return;
+    const f = nearest(i); if(!f) return;
     lastDrawn = i;
     ctx.fillStyle = '#0E0E0E'; ctx.fillRect(0,0,cv.width,cv.height);
-    // contain
-    const r = Math.min(cv.width/im.width, cv.height/im.height);
-    const dw = im.width*r, dh = im.height*r;
-    ctx.drawImage(im, (cv.width-dw)/2, (cv.height-dh)/2, dw, dh);
+    const sx = (f.idx % CONFIG.cols) * CONFIG.fw, sy = Math.floor(f.idx / CONFIG.cols) * CONFIG.fh;
+    const r = Math.min(cv.width/CONFIG.fw, cv.height/CONFIG.fh);
+    const dw = CONFIG.fw*r, dh = CONFIG.fh*r;
+    ctx.drawImage(f.sheet.img, sx, sy, CONFIG.fw, CONFIG.fh, (cv.width-dw)/2, (cv.height-dh)/2, dw, dh);
   }
 
   function progress(){
@@ -676,7 +679,7 @@ window.__introDone = false;
   if(reduce){
     story.classList.add('static');
     const last = total-1;
-    load(last).then(()=>{ current = target = last; size(); });
+    loadSheet(frames[last].sheet).then(()=>{ current = target = last; size(); });
     hdr.classList.add('solid');
     addEventListener('scroll', () => { hdr.classList.toggle('solid', true); }, {passive:true});
     return;
@@ -685,37 +688,24 @@ window.__introDone = false;
   addEventListener('resize', size);
   addEventListener('scroll', onScroll, { passive:true });
 
-  // Préchargement : s1+s2 avant de libérer le scroll, s3+s4 en arrière-plan
+  // Préchargement : feuilles de s1+s2 avant de libérer le scroll, s3+s4 ensuite
   const bar = document.getElementById('loadbar');
   const barFill = bar.querySelector('i');
-  let loadedCount = 0, ready = false;
-  const firstBatchEnd = CONFIG.sequences[0].count + CONFIG.sequences[1].count - 1;
-  function tick(){ loadedCount++; barFill.style.transform = `scaleX(${Math.min(1, loadedCount/(firstBatchEnd+1))})`; }
-  async function loadRangeTicked(a, b, c){
-    let i = a;
-    const workers = Array.from({length:c}, async () => { while(i<=b){ const k=i++; await load(k); if(k<=firstBatchEnd) tick(); } });
-    await Promise.all(workers);
-  }
-  function maybeUnlock(){
-    if(ready && window.__introDone){ document.documentElement.classList.remove('locked'); }
-  }
-  function unlock(){
-    if(ready) return; ready = true;
-    bar.classList.add('off'); hint.classList.add('ready');
-    maybeUnlock();
-  }
+  let ready = false, loadedSheets = 0;
+  const firstSheets = Math.ceil(CONFIG.sequences[0].count/CONFIG.per); // s1 suffit pour démarrer, la suite arrive pendant l'affûtage
+  function tick(){ loadedSheets++; barFill.style.transform = `scaleX(${Math.min(1, loadedSheets/firstSheets)})`; }
+  function maybeUnlock(){ if(ready && window.__introDone) document.documentElement.classList.remove('locked'); }
+  function unlock(){ if(ready) return; ready = true; bar.classList.add('off'); hint.classList.add('ready'); maybeUnlock(); }
   addEventListener('introdone', maybeUnlock);
-  // Les frames attendent que la vidéo d'intro ait démarré (ou soit abandonnée)
-  // pour ne pas lui voler la bande passante.
   function startFrames(){
     if(startFrames.done) return; startFrames.done = true;
     (async () => {
-      await load(0); size(); onScroll();
-      await loadRangeTicked(0, firstBatchEnd, 12);
+      await loadSheet(sheets[0]); tick(); size(); onScroll();
+      await loadSheets(1, firstSheets-1, 4, tick);
       unlock();
-      loadRangeTicked(firstBatchEnd+1, total-1, 8);
+      loadSheets(firstSheets, sheets.length-1, 4);
     })();
-    setTimeout(unlock, 12000); // garde-fou 4G lente
+    setTimeout(unlock, 12000);
   }
   addEventListener('introplaying', startFrames);
   addEventListener('introdone', startFrames);
